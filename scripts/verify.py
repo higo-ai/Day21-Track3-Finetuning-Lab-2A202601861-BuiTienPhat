@@ -32,7 +32,11 @@ def check(name: str, status: str, detail: str = "") -> None:
 
 
 def _sha(path: pathlib.Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()[:16]
+    try:
+        content = path.read_text(encoding="utf-8").replace("\r\n", "\n")
+        return hashlib.sha256(content.encode("utf-8")).hexdigest()[:16]
+    except Exception:
+        return hashlib.sha256(path.read_bytes()).hexdigest()[:16]
 
 
 def _load_json(path: pathlib.Path):
