@@ -47,9 +47,9 @@ mode = assistant-only   supervised 39/94 (41%)
 
 | Run | target | regression | format | latency (ms) |
 |---|---|---|---|---|
-| (a) base + naive prompt | 0.000 | 0.7578 | 0.000 | 3341.4 |
-| (b) base + optimized prompt | 0.765 | 0.7578 | 1.000 | 1044.8 |
-| (c) LoRA fine-tune | 0.970 | 0.4556 | 1.000 | 1450.6 |
+| (a) base + naive prompt | 0.000 | 0.7578 | 0.000 | 3080.8 |
+| (b) base + optimized prompt | 0.765 | 0.7578 | 1.000 | 982.3 |
+| (c) LoRA fine-tune | 0.970 | 0.3222 | 1.000 | 1343.6 |
 
 **(b) có thật sự mạnh hơn (a) không?** Có.
 Bạn có sửa `OPTIMIZED_PROMPT` không? Nếu có: **làm mạnh lên hay yếu đi**, và vì sao?
@@ -61,8 +61,8 @@ Bạn có sửa `OPTIMIZED_PROMPT` không? Nếu có: **làm mạnh lên hay y�
 
 | Run | vị trí | r | trainable | LR | train loss (NB4) | **target (NB5 §4)** | s | VRAM GB |
 |---|---|---|---|---|---|---|---|---|
-| `correct` | text-linear | 16 | 32464896 | 0.0001 | 0.6263 | 0.9700 | 1.000 | 12.01 |
-| `attn_only` | q,v | 283 | 32456704 | 0.0001 | 0.5369 | 0.9700 | 1.000 | 12.02 |
+| `correct` | text-linear | 16 | 32464896 | 0.0001 | 0.6265 | 0.9700 | 1.000 | 12.01 |
+| `attn_only` | q,v | 283 | 32456704 | 0.0001 | 0.5377 | 0.9700 | 1.000 | 12.02 |
 | `wrong_lr` | text-linear | 16 | 32464896 | 1e-05 | 1.5704 | 0.0000 | 0.000 | 12.01 |
 | `qlora` | text-linear | 16 | 32464896 | 0.0001 | 0.7058 | 0.9400 | 1.000 | 7.09 |
 
@@ -74,7 +74,7 @@ Trả lời ba câu (mỗi câu ≥3 câu văn):
 
 **4.1 — `attn_only` có cùng số tham số huấn luyện với `correct`. Trên tập target nó thắng, thua, hay hoà? Thứ tự đó có giống thứ tự theo train loss không? Điều đó nói gì về *rank* so với *vị trí gắn adapter*?**
 
-Trên tập target, `attn_only` và `correct` cho kết quả hòa nhau khi cùng đạt điểm số cao tuyệt đối là 0.9700. Tuy nhiên, thứ tự này hoàn toàn không giống với thứ tự theo train loss vì train loss của `attn_only` tốt hơn (0.5369 so với 0.6263 của `correct`). Điểm đặc biệt là `attn_only` có độ trễ sinh từ thấp hơn đáng kể (901.4ms so với 1450.6ms) vì chỉ có 2 module được gắn LoRA thay vì 12, giúp giảm thiểu overhead tính toán khi forward pass. Điều này chứng minh rằng đối với các tác vụ hẹp như trích xuất thông tin, việc nâng rank của LoRA ở các vị trí cốt lõi (`q_proj`, `v_proj`) mang lại hiệu quả tương đương toàn bộ các lớp tuyến tính, đồng thời tối ưu hóa được đáng kể thời gian phản hồi thực tế của mô hình.
+Trên tập target, `attn_only` và `correct` cho kết quả hòa nhau khi cùng đạt điểm số cao tuyệt đối là 0.9700. Tuy nhiên, thứ tự này hoàn toàn không giống với thứ tự theo train loss vì train loss của `attn_only` tốt hơn (0.5377 so với 0.6265 của `correct`). Điểm đặc biệt là `attn_only` có độ trễ sinh từ thấp hơn đáng kể (864.2ms so với 1343.6ms) vì chỉ có 2 module được gắn LoRA thay vì 12, giúp giảm thiểu overhead tính toán khi forward pass. Điều này chứng minh rằng đối với các tác vụ hẹp như trích xuất thông tin, việc nâng rank của LoRA ở các vị trí cốt lõi (`q_proj`, `v_proj`) mang lại hiệu quả tương đương toàn bộ các lớp tuyến tính, đồng thời tối ưu hóa được đáng kể thời gian phản hồi thực tế của mô hình.
 
 **4.2 — `wrong_lr` chỉ khác đúng một con số. Đường loss khác nhau ra sao? Nếu chỉ nhìn loss mà không biết LR, bạn sẽ kết luận sai điều gì?**
 
@@ -82,19 +82,19 @@ Trên tập target, `attn_only` và `correct` cho kết quả hòa nhau khi cùn
 
 **4.3 — `qlora` tiết kiệm bao nhiêu VRAM, trả giá bằng gì? Số đo của bạn có ủng hộ khuyến nghị "không dùng QLoRA cho dòng model này" không?**
 
-Mô hình QLoRA 4-bit giúp tiết kiệm được 4.92 GB bộ nhớ VRAM đỉnh điểm khi chỉ tiêu tốn 7.09 GB so với 12.01 GB của bản chuẩn `correct` 16-bit. Tuy nhiên, sự đánh đổi này phải trả giá bằng việc độ chính xác trên tập target bị sụt giảm từ 0.9700 xuống còn 0.9400, đồng thời thời gian trễ sinh từ cũng tăng nhẹ từ 1450.6ms lên 1795.1ms do overhead giải nén lượng tử hóa lúc thực thi. Số đo thực tế của dự án hoàn toàn ủng hộ khuyến cáo "không dùng QLoRA cho dòng Qwen3.5" từ nhà phát triển, ngoại trừ trường hợp phần cứng quá hạn chế không thể nạp nổi mô hình 16-bit.
+Mô hình QLoRA 4-bit giúp tiết kiệm được 4.92 GB bộ nhớ VRAM đỉnh điểm khi chỉ tiêu tốn 7.09 GB so với 12.01 GB của bản chuẩn `correct` 16-bit. Tuy nhiên, sự đánh đổi này phải trả giá bằng việc độ chính xác trên tập target bị sụt giảm từ 0.9700 xuống còn 0.9400, đồng thời thời gian trễ sinh từ cũng tăng nhẹ từ 1343.6ms lên 1781.8ms do overhead giải nén lượng tử hóa lúc thực thi. Số đo thực tế của dự án hoàn toàn ủng hộ khuyến cáo "không dùng QLoRA cho dòng Qwen3.5" từ nhà phát triển, ngoại trừ trường hợp phần cứng quá hạn chế không thể nạp nổi mô hình 16-bit.
 
 ---
 
 ## 5. Phán quyết (NB5)
 
 **Kết quả cổng hồi quy**: `FAILED`
-`target Δ = +0.205` · `regression Δ = -0.302` · `valid_trace_rate = 0.00`
+`target Δ = +0.205` · `regression Δ = -0.436` · `valid_trace_rate = 0.00`
 
 Diễn giải (≥100 từ). Nếu FAILED: **vì sao**, và điều đó nói gì về bài toán của bạn?
 (Một FAILED được phân tích tốt ăn điểm cao hơn một PASSED không giải thích được.)
 
-Cổng hồi quy báo trạng thái FAILED do điểm kiểm tra kiến thức chung ở tập regression bị suy giảm nghiêm trọng tới 0.302 (giảm từ 0.7578 xuống còn 0.4556, vượt xa ngưỡng chịu đựng cho phép là 0.020). Điều này xảy ra do hiện tượng **quên thảm họa (catastrophic forgetting)** khi chúng ta tinh chỉnh mô hình trên một tập dữ liệu quá chuyên biệt (chỉ có 225 mẫu phân loại JSON triage) mà hoàn toàn không pha trộn thêm bất kỳ dữ liệu phổ thông nào. Mô hình bị quá khớp (overfitting) vào cấu trúc JSON và các nhãn phân loại mới, làm mất đi khả năng lập luận chung và kiến thức nền tảng sẵn có của mô hình cơ sở. Để khắc phục điều này cho bài toán thực tế, chúng ta bắt buộc phải trộn thêm từ 1% đến 5% dữ liệu phổ thông (như ShareGPT hoặc các bộ dữ liệu hội thoại thông dụng) vào tập huấn luyện nhằm bảo toàn năng lực lập luận tổng quát của mô hình.
+Cổng hồi quy báo trạng thái FAILED do điểm kiểm tra kiến thức chung ở tập regression bị suy giảm nghiêm trọng tới 0.436 (giảm từ 0.7578 xuống còn 0.3222, vượt xa ngưỡng chịu đựng cho phép là 0.020). Điều này xảy ra do hiện tượng **quên thảm họa (catastrophic forgetting)** khi chúng ta tinh chỉnh mô hình trên một tập dữ liệu quá chuyên biệt (chỉ có 225 mẫu phân loại JSON triage) mà hoàn toàn không pha trộn thêm bất kỳ dữ liệu phổ thông nào. Mô hình bị quá khớp (overfitting) vào cấu trúc JSON và các nhãn phân loại mới, làm mất đi khả năng lập luận chung và kiến thức nền tảng sẵn có của mô hình cơ sở. Để khắc phục điều này cho bài toán thực tế, chúng ta bắt buộc phải trộn thêm từ 1% đến 5% dữ liệu phổ thông (như ShareGPT hoặc các bộ dữ liệu hội thoại thông dụng) vào tập huấn luyện nhằm bảo toàn năng lực lập luận tổng quát của mô hình.
 
 ---
 
@@ -118,7 +118,7 @@ Các ca tinh chỉnh (FT) bị thua chủ yếu gặp lỗi ở phần đánh gi
 
 **Kết luận (≥150 từ).** Bạn có nên deploy bản fine-tune này không, và vì sao? Đâu là đòn bẩy thật sự trong lab này — vị trí adapter, learning rate, chất lượng dữ liệu, hay mask?
 
-Chúng ta chưa nên deploy trực tiếp phiên bản fine-tune này lên môi trường sản xuất thực tế. Mặc dù mô hình đạt được sự cải thiện vượt bậc về độ chính xác trên tác vụ đích (tăng từ 76.5% lên 97%), việc suy giảm nghiêm trọng năng lực kiến thức chung ở tập regression (-30.2%) sẽ khiến mô hình dễ gặp lỗi hoặc phản hồi ngớ ngẩn khi người dùng đưa ra các câu hỏi ngoài phạm vi hẹp. Đòn bẩy thực tế lớn nhất trong bài lab này chính là **tốc độ học (Learning Rate)** và **vị trí đặt adapter (text-linear)**. Việc đặt đúng tốc độ học 1e-4 giúp LoRA hội tụ tối ưu, và việc gắn adapter trên toàn bộ các lớp decoder tuyến tính đảm bảo mô hình nắm bắt đầy đủ thông tin biểu diễn. Để có thể deploy an toàn, chúng ta cần bổ sung thêm 2% đến 5% dữ liệu đa mục đích để khắc phục hiện tượng quên thảm họa trước khi đưa mô hình ra thực tế.
+Chúng ta chưa nên deploy trực tiếp phiên bản fine-tune này lên môi trường sản xuất thực tế. Mặc dù mô hình đạt được sự cải thiện vượt bậc về độ chính xác trên tác vụ đích (tăng từ 76.5% lên 97%), việc suy giảm nghiêm trọng năng lực kiến thức chung ở tập regression (-43.6%) sẽ khiến mô hình dễ gặp lỗi hoặc phản hồi ngớ ngẩn khi người dùng đưa ra các câu hỏi ngoài phạm vi hẹp. Đòn bẩy thực tế lớn nhất trong bài lab này chính là **tốc độ học (Learning Rate)** và **vị trí đặt adapter (text-linear)**. Việc đặt đúng tốc độ học 1e-4 giúp LoRA hội tụ tối ưu, và việc gắn adapter trên toàn bộ các lớp decoder tuyến tính đảm bảo mô hình nắm bắt đầy đủ thông tin biểu diễn. Để có thể deploy an toàn, chúng ta cần bổ sung thêm 2% đến 5% dữ liệu đa mục đích để khắc phục hiện tượng quên thảm họa trước khi đưa mô hình ra thực tế.
 
 **Ba điều tôi học được** (cụ thể, không generic):
 1. LoRA cần tốc độ học lớn hơn đáng kể (thường gấp 10 lần) so với full fine-tuning do các ma trận LoRA bổ trợ được khởi tạo bằng 0 và cần cập nhật đủ nhanh để ghi nhận thông tin mới.

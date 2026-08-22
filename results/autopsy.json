@@ -3,28 +3,28 @@
     "run": "correct",
     "target": 0.97,
     "format": 1.0,
-    "latency_ms": 1450.6,
+    "latency_ms": 1343.6,
     "n": 50
   },
   {
     "run": "attn_only",
     "target": 0.97,
     "format": 1.0,
-    "latency_ms": 901.4,
+    "latency_ms": 864.2,
     "n": 50
   },
   {
     "run": "wrong_lr",
     "target": 0.0,
     "format": 0.0,
-    "latency_ms": 5187.1,
+    "latency_ms": 4950.5,
     "n": 50
   },
   {
     "run": "qlora",
     "target": 0.94,
     "format": 1.0,
-    "latency_ms": 1795.1,
+    "latency_ms": 1781.8,
     "n": 50
   }
 ]

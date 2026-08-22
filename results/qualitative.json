@@ -3,19 +3,37 @@
     "i": 3,
     "ticket": "Cho mình hỏi, mình đặt bình giữ nhiệt mã đơn VN804124. Chưa thấy tiền.",
     "ft_score": 0.75,
-    "ft_pred": "{\"intent\": \"hoan_tien\", \"urgency\": \"thap\", \"product\": \"bình giữ nhiệt\", \"sentiment\": \"tieu"
+    "ft_pred": "{\"intent\": \"hoan_tien\", \"urgency\": \"trung_binh\", \"product\": \"bình giữ nhiệt\", \"sentiment\":"
   },
   {
     "i": 5,
     "ticket": "Shop ơi, mình đặt nồi chiên không dầu mã đơn DH249548. Thiếu phụ kiện.",
     "ft_score": 0.75,
-    "ft_pred": "{\"intent\": \"san_pham_loi\", \"urgency\": \"thap\", \"product\": \"nồi chiên không dầu\", \"sentiment"
+    "ft_pred": "{\"intent\": \"san_pham_loi\", \"urgency\": \"trung_binh\", \"product\": \"nồi chiên không dầu\", \"sen"
   },
   {
     "i": 12,
     "ticket": "Shop ơi, mình đặt áo khoác gió mã đơn VN613097. Bị lỗi. Khi nào tiện. ",
     "ft_score": 0.75,
-    "ft_pred": "{\"intent\": \"san_pham_loi\", \"urgency\": \"thap\", \"product\": \"áo khoác gió\", \"sentiment\": \"tie"
+    "ft_pred": "{\"intent\": \"san_pham_loi\", \"urgency\": \"trung_binh\", \"product\": \"áo khoác gió\", \"sentiment\""
+  },
+  {
+    "i": 39,
+    "ticket": "Chào shop, mình đặt nồi chiên không dầu mã đơn VN949966. Hoàn tiền. Kh",
+    "ft_score": 0.75,
+    "ft_pred": "{\"intent\": \"hoan_tien\", \"urgency\": \"trung_binh\", \"product\": \"nồi chiên không dầu\", \"sentim"
+  },
+  {
+    "i": 41,
+    "ticket": "Cho mình hỏi, mình đặt đèn bàn LED mã đơn OD436045. Giao hàng chậm. Kh",
+    "ft_score": 0.75,
+    "ft_pred": "{\"intent\": \"van_chuyen\", \"urgency\": \"trung_binh\", \"product\": \"đèn bàn LED\", \"sentiment\": \""
+  },
+  {
+    "i": 46,
+    "ticket": "Chào shop, mình đặt đèn bàn LED mã đơn OD819229. Sai màu. Khi nào tiện",
+    "ft_score": 0.75,
+    "ft_pred": "{\"intent\": \"san_pham_loi\", \"urgency\": \"trung_binh\", \"product\": \"đèn bàn LED\", \"sentiment\":"
   },
   {
     "i": 0,
@@ -234,22 +252,10 @@
     "ft_pred": "{\"intent\": \"hoi_thong_tin\", \"urgency\": \"cao\", \"product\": \"bàn phím cơ\", \"sentiment\": \"trun"
   },
   {
-    "i": 39,
-    "ticket": "Chào shop, mình đặt nồi chiên không dầu mã đơn VN949966. Hoàn tiền. Kh",
-    "ft_score": 1.0,
-    "ft_pred": "{\"intent\": \"hoan_tien\", \"urgency\": \"thap\", \"product\": \"nồi chiên không dầu\", \"sentiment\": "
-  },
-  {
     "i": 40,
     "ticket": "Chào shop, mình đặt đèn bàn LED mã đơn VN708765. Không hoạt động. Tôi ",
     "ft_score": 1.0,
     "ft_pred": "{\"intent\": \"san_pham_loi\", \"urgency\": \"cao\", \"product\": \"đèn bàn LED\", \"sentiment\": \"tieu_"
-  },
-  {
-    "i": 41,
-    "ticket": "Cho mình hỏi, mình đặt đèn bàn LED mã đơn OD436045. Giao hàng chậm. Kh",
-    "ft_score": 1.0,
-    "ft_pred": "{\"intent\": \"van_chuyen\", \"urgency\": \"thap\", \"product\": \"đèn bàn LED\", \"sentiment\": \"tich_c"
   },
   {
     "i": 42,
@@ -274,12 +280,6 @@
     "ticket": "Shop ơi, mình đặt sạc dự phòng mã đơn VN727311. Còn hàng không. Tôi cầ",
     "ft_score": 1.0,
     "ft_pred": "{\"intent\": \"hoi_thong_tin\", \"urgency\": \"cao\", \"product\": \"sạc dự phòng\", \"sentiment\": \"tru"
-  },
-  {
-    "i": 46,
-    "ticket": "Chào shop, mình đặt đèn bàn LED mã đơn OD819229. Sai màu. Khi nào tiện",
-    "ft_score": 1.0,
-    "ft_pred": "{\"intent\": \"san_pham_loi\", \"urgency\": \"thap\", \"product\": \"đèn bàn LED\", \"sentiment\": \"tich"
   },
   {
     "i": 47,
